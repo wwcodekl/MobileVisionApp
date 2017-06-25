@@ -1,0 +1,51 @@
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/pycon"/>
+
+        <Button
+            android:id="@+id/btnDetectText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="detectText"
+            android:text="Detect Text" />
+
+        <Button
+            android:id="@+id/btnTakePic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Take A Pic!" />
+
+        <EditText
+            android:id="@+id/detectedUrlTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/btnLaunchBrowser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Launch Browser!" />
+
+        <Button
+            android:id="@+id/btnSendMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Message" />
+    </LinearLayout>
+</ScrollView>
