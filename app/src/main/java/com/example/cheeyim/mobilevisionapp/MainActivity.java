@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_WRITE_PERMISSION = 20;
     private static final String SAVED_INSTANCE_URI = "uri";
 
+    /**
+     * Initializes the UI.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Check for storage permission before writing image to external storage.  If the
+        // permission is not granted yet, request write permission.
         mTakePic = (Button) findViewById(R.id.btnTakePic);
         mTakePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,37 +110,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    Call post(String url, Callback callback) throws IOException{
-        RequestBody formBody = new FormBody.Builder()
-                .add("To", mContext.getString(R.string.to_mobile))
-                .add("Body", String.format("Hey! Check out this site - %s", detectedTextView.getText().toString()))
-                .build();
-        Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-
-        Call response = mClient.newCall(request);
-        response.enqueue(callback);
-        return response;
-
-    }
-
-    private void launchBrowserIntent(String uriStr) {
-
-        Uri uriUrl = Uri.parse(uriStr);
-        Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
-        startActivity(launchBrowser);
-    }
-
-    private void takePicture() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File photo = new File(Environment.getExternalStorageDirectory(), "picture.jpg");
-        imageUri = Uri.fromFile(photo);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, PHOTO_REQUEST);
     }
 
     @Override
@@ -177,6 +151,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    Call post(String url, Callback callback) throws IOException{
+        RequestBody formBody = new FormBody.Builder()
+                .add("To", mContext.getString(R.string.to_mobile))
+                .add("Body", String.format("Hey! Check out this site - %s", detectedTextView.getText().toString()))
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        Call response = mClient.newCall(request);
+        response.enqueue(callback);
+        return response;
+
+    }
+
+    private void launchBrowserIntent(String uriStr) {
+
+        Uri uriUrl = Uri.parse(uriStr);
+        Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+        startActivity(launchBrowser);
+    }
+
+    private void takePicture() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photo = new File(Environment.getExternalStorageDirectory(), "picture.jpg");
+        imageUri = Uri.fromFile(photo);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, PHOTO_REQUEST);
+    }
+
     private void launchMediaScanIntent() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(imageUri);
@@ -189,16 +194,39 @@ public class MainActivity extends AppCompatActivity {
         detectedTextView.setText(detectedTextView.getText() + readBitmap(textBitmap));
     }
 
+    /**
+     * Creates the detector and processor pipeline.
+     */
     private String readBitmap(Bitmap textBitmap) {
+        // A text recognizer is created to find text. This detector object processes images and
+        // determines what text appears within them. Once it's initialized, a TextRecognizer can
+        // be used to detect text in all types of images.
         TextRecognizer textRecognizer = new TextRecognizer.Builder(this).build();
 
         if (!textRecognizer.isOperational()) {
+
+            // Note: The first time that an app using a Vision API is installed on a
+            // device, GMS will download a native libraries to the device in order to do detection.
+            // Usually this completes before the app is run for the first time.  But if that
+            // download has not yet completed, then the above call will not detect any text,
+            // barcodes, or faces.
+            //
+            // isOperational() can be used to check if the required native libraries are currently
+            // available.  The detectors will automatically become operational once the library
+            // downloads complete on device.
             new AlertDialog.Builder(this)
                     .setMessage("Text recognizer could not be set up on your device :(")
                     .show();
             return null;
         }
 
+        /**
+         * Called by the detector to deliver detection results.
+         * If your application called for it, this could be a place to check for
+         * equivalent detections by tracking TextBlocks that are similar in location and content from
+         * previous frames, or reduce noise by eliminating TextBlocks that have not persisted through
+         * multiple detections.
+         */
         Frame frame = new Frame.Builder().setBitmap(textBitmap).build();
         SparseArray<TextBlock> text = textRecognizer.detect(frame);
         String lines = "";
@@ -213,6 +241,9 @@ public class MainActivity extends AppCompatActivity {
                     lines = lineStr;
             }
         }
+
+        //clean up native components
+        textRecognizer.release();
 
         return lines;
     }
