@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Mobile Vision App</string>
+    <string name="backend_url">https://6ad15a5e.ngrok.io/sms</string>
+    <string name="to_mobile">+60126281657</string>
+</resources>
