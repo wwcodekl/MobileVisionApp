@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PHOTO_REQUEST = 10;
     private static final int REQUEST_WRITE_PERMISSION = 20;
     private static final String SAVED_INSTANCE_URI = "uri";
+    private static final String SAVED_INSTANCE_RESULT = "result";
 
     /**
      * Initializes the UI.
@@ -64,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
         detectedTextView = (TextView) findViewById(R.id.detectedUrlTxt);
         mSend = (Button) findViewById(R.id.btnSendMessage);
         mContext = getApplicationContext();
+
+        if (savedInstanceState != null) {
+            imageUri = Uri.parse(savedInstanceState.getString(SAVED_INSTANCE_URI));
+            detectedTextView.setText(savedInstanceState.getString(SAVED_INSTANCE_RESULT));
+        }
 
         mLaunchBrowser = (Button) findViewById(R.id.btnLaunchBrowser);
         mLaunchBrowser.setOnClickListener(new View.OnClickListener() {
@@ -129,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         if (imageUri != null) {
             outState.putString(SAVED_INSTANCE_URI, imageUri.toString());
+            outState.putString(SAVED_INSTANCE_RESULT, detectedTextView.getText().toString());
         }
         super.onSaveInstanceState(outState);
     }
@@ -237,10 +244,13 @@ public class MainActivity extends AppCompatActivity {
             for (Text line : tBlock.getComponents()) {
                 //extract scanned text lines here
                 String lineStr = line.getValue().toLowerCase();
-                if (lineStr.contains("http://"))
+                if (lineStr.contains("http") || lineStr.contains("www."))
                     lines = lineStr;
+
+                Log.d("DEBUG LINE STR: ", lineStr);
             }
         }
+
 
         //clean up native components
         textRecognizer.release();
