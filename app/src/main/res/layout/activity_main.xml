@@ -14,7 +14,7 @@
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@drawable/pycon"/>
+            android:src="@drawable/logo_wwcode"/>
 
         <Button
             android:id="@+id/btnDetectText"
@@ -43,9 +43,9 @@
             android:text="Launch Browser!" />
 
         <Button
-            android:id="@+id/btnSendMessage"
+            android:id="@+id/btnFaceTracker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send Message" />
+            android:text="Face Tracker" />
     </LinearLayout>
 </ScrollView>

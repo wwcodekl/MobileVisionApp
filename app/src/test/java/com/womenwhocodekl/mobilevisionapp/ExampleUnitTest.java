@@ -1,4 +1,4 @@
-package com.example.cheeyim.mobilevisionapp;
+package com.womenwhocodekl.mobilevisionapp;
 
 import org.junit.Test;
 

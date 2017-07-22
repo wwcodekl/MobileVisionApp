@@ -1,4 +1,4 @@
-package com.example.cheeyim.mobilevisionapp;
+package com.womenwhocodekl.mobilevisionapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.cheeyim.mobilevisionapp", appContext.getPackageName());
+        assertEquals("com.womenwhocodekl.mobilevisionapp", appContext.getPackageName());
     }
 }

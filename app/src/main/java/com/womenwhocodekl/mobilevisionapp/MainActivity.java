@@ -1,4 +1,4 @@
-package com.example.cheeyim.mobilevisionapp;
+package com.womenwhocodekl.mobilevisionapp;
 
 import android.Manifest;
 import android.content.Context;
@@ -42,12 +42,13 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
     TextView detectedTextView;
-    Button mSend;
+    Button mFaceTracker;
     Button mLaunchBrowser;
     Button mTakePic;
     OkHttpClient mClient = new OkHttpClient();
     Context mContext;
     Uri imageUri;
+
     private static final int PHOTO_REQUEST = 10;
     private static final int REQUEST_WRITE_PERMISSION = 20;
     private static final String SAVED_INSTANCE_URI = "uri";
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         imageView = (ImageView) findViewById(R.id.image);
         detectedTextView = (TextView) findViewById(R.id.detectedUrlTxt);
-        mSend = (Button) findViewById(R.id.btnSendMessage);
+        mFaceTracker = (Button) findViewById(R.id.btnFaceTracker);
         mContext = getApplicationContext();
 
         if (savedInstanceState != null) {
@@ -90,30 +91,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mSend.setOnClickListener(new View.OnClickListener() {
+        mFaceTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    post(mContext.getString(R.string.backend_url), new  Callback(){
-
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(),"SMS Sent!",Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Intent intent = new Intent(MainActivity.this, FaceTrackerActivity.class);
+                startActivity(intent);
             }
         });
     }
